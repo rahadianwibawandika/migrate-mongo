@@ -8,6 +8,7 @@ describe("up", () => {
   let status;
   let configFile;
   let migrationsDir;
+  let logger;
   let db;
 
   let firstPendingMigration;
@@ -79,9 +80,19 @@ describe("up", () => {
     };
   }
 
+  function mockLogger() {
+    return () => ({
+      info: () => {},
+      time: () => {},
+      timeEnd: () => {},
+      timeLog: () => {}, 
+    })
+  }
+
   function loadUpWithInjectedMocks() {
     return proxyquire("../lib/actions/up", {
       "./status": status,
+      "../utils/logger": logger,
       "../env/configFile": configFile,
       "../env/migrationsDir": migrationsDir
     });
@@ -96,6 +107,7 @@ describe("up", () => {
     configFile = mockConfigFile();
     migrationsDir = mockMigrationsDir();
     db = mockDb();
+    logger = mockLogger()
 
     up = loadUpWithInjectedMocks();
   });

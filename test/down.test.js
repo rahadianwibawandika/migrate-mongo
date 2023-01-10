@@ -9,6 +9,7 @@ describe("down", () => {
   let configFile;
   let migrationsDir;
   let db;
+  let logger;
   let migration;
   let changelogCollection;
 
@@ -61,9 +62,19 @@ describe("down", () => {
     };
   }
 
+  function mockLogger() {
+    return () => ({
+      info: () => {},
+      time: () => {},
+      timeEnd: () => {},
+      timeLog: () => {}, 
+    })
+  }
+
   function loadDownWithInjectedMocks() {
     return proxyquire("../lib/actions/down", {
       "./status": status,
+      "../utils/logger": logger,
       "../env/configFile": configFile,
       "../env/migrationsDir": migrationsDir
     });
@@ -77,6 +88,7 @@ describe("down", () => {
     configFile = mockConfigFile();
     migrationsDir = mockMigrationsDir();
     db = mockDb();
+    logger = mockLogger()
 
     down = loadDownWithInjectedMocks();
   });
